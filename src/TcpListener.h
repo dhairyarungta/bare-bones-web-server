@@ -5,9 +5,6 @@
 #include <WS2tcpip.h>
 
 
-
-
-
 class TcpListener
 {
 public: 

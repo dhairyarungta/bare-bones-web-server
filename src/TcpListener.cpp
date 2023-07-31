@@ -54,6 +54,7 @@ int TcpLIstener::run()
                 SOCKET client = accept (m_socket, nullptr, nullptr);
                 FD_SET(client, &m_master);
                 //TODO CLIENT CONNECTED
+                //send welcome to new connected client 
             }else 
             {
                 char buf[4096];
@@ -61,17 +62,44 @@ int TcpLIstener::run()
 
                 //receive message
                 int bytesIn = recv(sock, buf, 4096, 0);
-                int (bytesIn<=0)
-                {
+                if (bytesIn<=0)
+                {   
+                    //if the bytes received are 0 or negative means the client has disconnected
                     //DROP the client 
                     //TODO :CLIENT DISCONNECTED
-                    closesocket(sock) 
+                    closesocket(sock) ;
+                    FD_CLR(sock,&m_master)
+                }else 
+                {
+                    for (int i =0 ;i<m_master.fd_count;i++)
+                    {
+                        SOCKET outSock = m_master.fd_array[i];
+                        if(outSock!=m_socket && outsock!=sock)
+                        {
+                            //send message to other clients
+                        }
+                    }
                 }
 
             }
 
         }
     }
+    
+    FD_CLR(m_socket, &m_master);
+    closesocket(m_socket);
+
+    while(m_master.fd_count>0)
+    {
+        SOCKET sock = m_master.fd_array[0];
+        FD_CLR(sock, &master);
+        closesocket(sock);
+
+    }
+
+    WSACleanup();    
+
+
 }
 
 

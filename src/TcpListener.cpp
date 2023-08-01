@@ -1,4 +1,7 @@
 #include "TcpListener.h"
+#include <iostream>
+#include <string>
+#include <sstream>
 
 
 int TcpListener::init()
@@ -53,7 +56,8 @@ int TcpLIstener::run()
             {
                 SOCKET client = accept (m_socket, nullptr, nullptr);
                 FD_SET(client, &m_master);
-                //TODO CLIENT CONNECTED
+                onClientConnected(client);
+                
                 //send welcome to new connected client 
             }else 
             {
@@ -66,19 +70,12 @@ int TcpLIstener::run()
                 {   
                     //if the bytes received are 0 or negative means the client has disconnected
                     //DROP the client 
-                    //TODO :CLIENT DISCONNECTED
+                    onClientDisconnected(sock);
                     closesocket(sock) ;
                     FD_CLR(sock,&m_master)
                 }else 
                 {
-                    for (int i =0 ;i<m_master.fd_count;i++)
-                    {
-                        SOCKET outSock = m_master.fd_array[i];
-                        if(outSock!=m_socket && outsock!=sock)
-                        {
-                            //send message to other clients
-                        }
-                    }
+                    onMessageReceived(sock, buf, bytesIn);
                 }
 
             }
@@ -98,8 +95,7 @@ int TcpLIstener::run()
     }
 
     WSACleanup();    
-
-
+    return 0;
 }
 
 
@@ -120,10 +116,10 @@ void TcpListener::broadcastToClients(int sendingClient, const char* msg, int len
     }
 }
 
-void TcpListener::onClientConnected()
+void TcpListener::onClientConnected(int clientSocket)
 {}
 
-void TcpListener::onClientDisconnected();
+void TcpListener::onClientDisconnected(int clientSocket);
 {}
 
 void TcpListener::onMessageReceived(int clientSocket, const char* msg , int length);

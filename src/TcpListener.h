@@ -1,7 +1,4 @@
 #pragma once 
-#include <iostream>
-#include <string>
-#include <sstream>
 #include <WS2tcpip.h>
 
 
@@ -21,19 +18,19 @@ public:
 
 protected:
     //Handler for client connections 
-    virtual void onClientConnected();
+    virtual void onClientConnected(int clientSocket);
 
     //Handler for client disconnections 
-    virtual void onClientDisconnected();
+    virtual void onClientDisconnected(int clientSocket);
 
     //Handler for when a message is recieved from the client 
     virtual void onMessageReceived(int clientSocket, const char* msg , int length);
 
     //send a message to a client
-    void sentToClient(int clientSocket, const char* msg, int length);
+    void sendToClient(int clientSocket, const char* msg, int length);
     
     //Boradcast a message from a client
-    void broadcastToClient(int sendingClient, const char* msg, int length)
+    void broadcastToClients(int sendingClient, const char* msg, int length)
 
 private:
     const char* m_ipAddress;//server ip address
